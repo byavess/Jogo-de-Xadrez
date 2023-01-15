@@ -2,6 +2,7 @@ package chess;
 
 
 import boardGame.Board;
+import boardGame.Piece;
 import boardGame.Position;
 import chessPieces.King;
 import chessPieces.Rook;
@@ -28,6 +29,28 @@ public class ChessMatch {
         }
         return mat;
     }
+
+    public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition){
+
+        //convertger pra posição da matriz
+        Position source = sourcePosition.toPosition();
+        Position target = targetPosition.toPosition();
+
+        validateSourcePosition(source);
+        Piece capturedPiece = makeMove(source, target);//responsavel pelo movimento da peça make move
+        return (ChessPiece)capturedPiece;
+    }
+    private Piece makeMove(Position source, Position target) { //posição origem e destino
+        Piece p = board.removePiece(source);
+        Piece capturedPiece = board.removePiece(target);
+        board.placePiece(p, target);
+        return (ChessPiece)capturedPiece;
+    }
+        private void validateSourcePosition(Position position){
+        if (!board.thereIsApiece(position)){
+            throw new ChessException("There is no piece on source positon");//
+        }
+        }
 
     //chama o board . placePiece
     //coordenadas do xadrez
