@@ -1,4 +1,12 @@
 package chess;
 
-public class ChessException {
+public class ChessException extends RuntimeException {
+        private static final long seialVersionUID = 1L;
+
+    public ChessException(String msg) {
+        super(msg);
+    }
+
+
+
 }
