@@ -1,6 +1,7 @@
 package chess;
 
 
+import application.UI;
 import boardGame.Board;
 import boardGame.Piece;
 import boardGame.Position;
@@ -13,8 +14,14 @@ public class ChessMatch {
     private Board board;
 
     public ChessMatch() {
+
+
         board = new Board(8, 8);// Aqui fica a dimensão do tabuleiro
         initalSetup();
+
+
+
+
     }
 
 
@@ -32,7 +39,7 @@ public class ChessMatch {
 
     public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition){
 
-        //convertger pra posição da matriz
+        //converter pra posição da matriz
         Position source = sourcePosition.toPosition();
         Position target = targetPosition.toPosition();
 
@@ -50,6 +57,9 @@ public class ChessMatch {
         if (!board.thereIsApiece(position)){
             throw new ChessException("There is no piece on source positon");//
         }
+        if(!board.piece(position).isThereAnyPossibleMove()){
+            throw new ChessException("Ther is no possible moves for the chose piece");
+        }
         }
 
     //chama o board . placePiece
@@ -59,6 +69,7 @@ public class ChessMatch {
     }
 
     private void initalSetup(){
+
 
         placeNewPiece('c', 2, new Rook(board, Color.WHITE));
         placeNewPiece('d', 2, new Rook(board, Color.WHITE));

@@ -12,8 +12,9 @@ public abstract class ChessPiece extends Piece {
     }
 
     public Color getColor() {
+
         return color;
     }
 
-    public abstract String toString();
+   // public abstract String toString();
 }
