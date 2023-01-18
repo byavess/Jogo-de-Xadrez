@@ -2,6 +2,7 @@ package chess;
 
 import boardGame.Board;
 import boardGame.Piece;
+import boardGame.Position;
 
 public abstract class ChessPiece extends Piece {
     private Color color;
@@ -12,9 +13,14 @@ public abstract class ChessPiece extends Piece {
     }
 
     public Color getColor() {
-
         return color;
     }
 
-   // public abstract String toString();
+
+    // so tem acesso no mesmo pacotes e subclasses no caso Piece
+    //vai ser usados novamete em outras peças //depois vamos nas peças e criamos o movimento singular
+    protected boolean isThereOpponentPiece(Position position){
+        ChessPiece p = (ChessPiece)getBoard().piece(position);
+        return p != null && p.getColor() != color;//concluir que e uma peça adversaria
+    }
 }

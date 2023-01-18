@@ -12,18 +12,11 @@ import chessPieces.Rook;
 public class ChessMatch {
 
     private Board board;
-
     public ChessMatch() {
-
 
         board = new Board(8, 8);// Aqui fica a dimensão do tabuleiro
         initalSetup();
-
-
-
-
     }
-
 
     // vai retornar uma matriz de peças de xadrez referente a essa partida Colunas e linhas
     public ChessPiece[][] getPieces() {
@@ -42,8 +35,8 @@ public class ChessMatch {
         //converter pra posição da matriz
         Position source = sourcePosition.toPosition();
         Position target = targetPosition.toPosition();
-
         validateSourcePosition(source);
+        validateTargetPosition(source, target);
         Piece capturedPiece = makeMove(source, target);//responsavel pelo movimento da peça make move
         return (ChessPiece)capturedPiece;
     }
@@ -51,7 +44,7 @@ public class ChessMatch {
         Piece p = board.removePiece(source);
         Piece capturedPiece = board.removePiece(target);
         board.placePiece(p, target);
-        return (ChessPiece)capturedPiece;
+        return capturedPiece;
     }
         private void validateSourcePosition(Position position){
         if (!board.thereIsApiece(position)){
@@ -59,8 +52,14 @@ public class ChessMatch {
         }
         if(!board.piece(position).isThereAnyPossibleMove()){
             throw new ChessException("Ther is no possible moves for the chose piece");
+    }
+      }
+
+      private void validateTargetPosition(Position source, Position target){
+        if(!board.piece(source).possibleMove(target)){
+            throw new ChessException("The chosen piece can't move to targer position");
         }
-        }
+      }
 
     //chama o board . placePiece
     //coordenadas do xadrez
@@ -71,13 +70,12 @@ public class ChessMatch {
     private void initalSetup(){
 
 
+        placeNewPiece('c', 1, new Rook(board, Color.WHITE));
         placeNewPiece('c', 2, new Rook(board, Color.WHITE));
         placeNewPiece('d', 2, new Rook(board, Color.WHITE));
         placeNewPiece('e', 2, new Rook(board, Color.WHITE));
-        placeNewPiece('c', 1, new Rook(board, Color.WHITE));
         placeNewPiece('e', 1, new Rook(board, Color.WHITE));
         placeNewPiece('d', 1, new King(board, Color.WHITE));
-
         placeNewPiece('c', 7, new Rook(board, Color.BLACK));
         placeNewPiece('c', 8, new Rook(board, Color.BLACK));
         placeNewPiece('d', 7, new Rook(board, Color.BLACK));
@@ -85,6 +83,7 @@ public class ChessMatch {
         placeNewPiece('e', 8, new Rook(board, Color.BLACK));
         placeNewPiece('d', 8, new King(board, Color.BLACK));
     }
+    }
 
 
-}
+

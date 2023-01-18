@@ -3,7 +3,7 @@ package boardGame;
 
 //Esse tabuleiro e o tabuleiro interno invisivel
 public abstract class Piece {
-    protected Position position; // protected posição camada omvosoveç
+    protected Position position; // protected posição camada
     private  Board board;
 
     public Piece(Board board) {
