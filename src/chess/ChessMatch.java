@@ -33,7 +33,7 @@ public class ChessMatch {
         Position position = sourcePosition.toPosition();
         validateSourcePosition(position);
         return board.piece(position).possibleMoves();
-        }
+        }//imprime uma posições possiveis a partir de uma posiçã ode origens
 
 
     public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition){
