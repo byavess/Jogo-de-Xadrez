@@ -22,21 +22,18 @@ public class Programa {
         List<ChessPiece> captured = new ArrayList<>();
 
 
-        while (true) {
+        while (!chessMatch.getcheckMate()) {
                         try {
                 UI.clearScreen();//limpa a tela cada vez que for no while
                 UI.printMatch(chessMatch,captured);//imprime o tabuleiro na tela
                 System.out.println();
-
                 System.out.print("Source: ");
                 ChessPosition source = UI.readChessPosition(sc);//lendo a posição de origem
 
                             boolean[][] possibleMoves = chessMatch.possibleMoves(source);
                             UI.clearScreen();
                             UI.printBoard(chessMatch.getPieces(), possibleMoves);//colori as possiveis possibilidades
-
                 System.out.println();
-
                 System.out.print("Target: ");
                 ChessPosition target = UI.readChessPosition(sc);
 
@@ -49,12 +46,15 @@ public class Programa {
             catch (ChessException e ){
                 System.out.println(e.getMessage());
                 sc.nextLine();
+            }
+                        catch (InputMismatchException e) {
+                            System.out.println(e.getMessage());
+                            sc.nextLine();
+                        }
 
-            }
-            catch (InputMismatchException e ){
-                System.out.println(e.getMessage());
-                sc.nextLine();
-            }
         }
+        //chegou aqui e pq deu check mate
+        UI.clearScreen();
+        UI.printMatch(chessMatch, captured);//pra ter a visão geral da partida finalizada
     }
 }

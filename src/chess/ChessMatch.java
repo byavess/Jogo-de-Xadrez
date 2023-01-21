@@ -18,14 +18,12 @@ public class ChessMatch {
     private Color currentPlay;//jogador atual
     private Board board;
     private boolean check;
+    private  boolean checkMate;
     private List<Piece> piecesOnTheBoard = new ArrayList<>();//essa estacia pode ser feita no construtor
     private List<Piece> capturedPieces = new ArrayList<>();
 
-
     //inicio da partida
-
     public ChessMatch() {
-
         board = new Board(8, 8);// Aqui fica a dimensão do tabuleiro
         turn = 1;
         currentPlay = Color.WHITE;
@@ -34,7 +32,6 @@ public class ChessMatch {
     }
     public  int getTurn(){
         return turn;
-        
     }
     public Color getCurrentPlayer(){
         return currentPlay;
@@ -42,10 +39,12 @@ public class ChessMatch {
     public boolean getCheck(){
         return check;
     }
+    public boolean getcheckMate(){
+        return checkMate;
+    }
 
     // vai retornar uma matriz de peças de xadrez referente a essa partida Colunas e linhas
     public ChessPiece[][] getPieces() {
-
         ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
         for (int i=0; i<board.getRows(); i++) {
             for (int j=0; j<board.getColumns(); j++) {
@@ -62,7 +61,6 @@ public class ChessMatch {
 
 
     public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition){
-
         //converter pra posição da matriz
         Position source = sourcePosition.toPosition();
         Position target = targetPosition.toPosition();
@@ -74,13 +72,19 @@ public class ChessMatch {
                 undoMove(source, target, capturedPiece);
                 throw new ChessException("you can't put yourself in check");
             }
-            check = (testCheck((opponent(currentPlay))))? true:false;//condição ternaria //se terte check do opnenet for verdade se nao e false
+            check = (testCheck(opponent(currentPlay)))? true : false;//condição ternaria //se terte check do opnenet for verdade se nao e false
 
-        nextTurn();
+                if(testCheckMate(opponent(currentPlay))){//testando se opnete ta em checMate
+                    checkMate = true;
+                }
+                else {
+                    nextTurn();
+                }
         return (ChessPiece)capturedPiece;
     }
     private Piece makeMove(Position source, Position target) { //posição origem e destino
         Piece p = board.removePiece(source);//tira a peça do tabuleiro
+
         Piece capturedPiece = board.removePiece(target);//possivel peça capturada
         board.placePiece(p, target);//colocar no destino a peça que tava na origem
 
@@ -89,11 +93,13 @@ public class ChessMatch {
             capturedPieces.add(capturedPiece);//adicona a lista de peças capturadas
         }
 
-        return capturedPiece;
+        return (ChessPiece)capturedPiece;
     }
 
     private void undoMove(Position source, Position target, Piece capturedPiece){//desfazer movimento "isso so no caso do rei"
         Piece p = board.removePiece(target);//tira a peça que moveu do destino
+//        ChessPiece p = (ChessPiece)board.removePiece(target);
+//        p.decreaseMoveCount();
         board.placePiece(p, source);//devolver pra posição de origem
         if(capturedPiece != null){
             board.placePiece(capturedPiece, target);//tira a peça que moveu do destino
@@ -153,6 +159,31 @@ public class ChessMatch {
             }
             return false;
     }
+    private boolean testCheckMate(Color color){
+        if(!testCheck(color)){
+            return false;
+
+        }
+        List<Piece> list = piecesOnTheBoard.stream().filter(x -> ((ChessPiece)x).getColor() == color).collect(Collectors.toList());
+        for (Piece p : list) {
+            boolean[][] mat = p.possibleMoves();
+            for (int i=0; i<board.getRows(); i++) {
+                for (int j=0; j<board.getColumns(); j++) {
+                    if (mat[i][j]) {
+                        Position source = ((ChessPiece)p).getChessPosition().toPosition();
+                        Position target = new Position(i, j);
+                        Piece capturedPiece = makeMove(source, target);
+                        boolean testCheck = testCheck(color);
+                        undoMove(source, target, capturedPiece);
+                        if (!testCheck) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+    return true;
+    }
     //chama o board . placePiece
     //coordenadas do xadrez
     private void  placeNewPiece(char column, int row, ChessPiece piece){
@@ -160,22 +191,16 @@ public class ChessMatch {
         piecesOnTheBoard.add(piece);
     }
 
-    private void initalSetup(){
+    private void initalSetup() {
 
 
-        placeNewPiece('c', 1, new Rook(board, Color.WHITE));
-        placeNewPiece('c', 2, new Rook(board, Color.WHITE));
-        placeNewPiece('d', 2, new Rook(board, Color.WHITE));
-        placeNewPiece('e', 2, new Rook(board, Color.WHITE));
-        placeNewPiece('e', 1, new Rook(board, Color.WHITE));
-        placeNewPiece('d', 1, new King(board, Color.WHITE));
-        placeNewPiece('c', 7, new Rook(board, Color.BLACK));
-        placeNewPiece('c', 8, new Rook(board, Color.BLACK));
-        placeNewPiece('d', 7, new Rook(board, Color.BLACK));
-        placeNewPiece('e', 7, new Rook(board, Color.BLACK));
-        placeNewPiece('e', 8, new Rook(board, Color.BLACK));
-        placeNewPiece('d', 8, new King(board, Color.BLACK));
-    }
+        placeNewPiece('h', 7, new Rook(board, Color.WHITE));
+        placeNewPiece('b', 1, new Rook(board, Color.WHITE));
+        placeNewPiece('e', 1, new King(board, Color.WHITE));
+
+        placeNewPiece('b', 8, new Rook(board, Color.BLACK));
+        placeNewPiece('a', 8, new King(board, Color.BLACK));
+      }
     }
 
 

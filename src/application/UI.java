@@ -35,12 +35,9 @@ public class UI {
     public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
     public  static void clearScreen() {
-
             System.out.print("\033[H\033[2J");
             System.out.flush();
         }
-
-
     public static ChessPosition readChessPosition(Scanner sc) {
         try {
             String s = sc.nextLine();
@@ -48,20 +45,29 @@ public class UI {
             int row = Integer.parseInt(s.substring(1));
             return new ChessPosition(column, row);
         } catch (RuntimeException e) {
-            throw new InputMismatchException("Erro reandig  ChessPosition. valid values are from a1 to h8");
+            throw new InputMismatchException("ErroR reandig  ChessPosition. valid values are from a1 to h8");
         }
     }
 
-    public static  void printMatch(ChessMatch chessMatch, List<ChessPiece> captured){
+    public static void printMatch(ChessMatch chessMatch, List<ChessPiece> captured) {
         printBoard(chessMatch.getPieces());//imprime o tabuleiro
-          System.out.println();
+        System.out.println();
         printCapturedPieces(captured);
         System.out.println();
         System.out.println("Turn : " + chessMatch.getTurn());
-        System.out.println("Waintig player" + chessMatch.getCurrentPlayer());
-
-        if(chessMatch.getCheck()){
-            System.out.println("CHECK");
+        System.out.println("Waiting player" + chessMatch.getCurrentPlayer());
+        if (chessMatch.getCheck()) {
+            System.out.println("CHECK!");
+            if(!chessMatch.getcheckMate()){
+                System.out.println("Waiting playe: " + chessMatch.getCurrentPlayer());
+                            }
+            if (chessMatch.getCheck()) {
+                System.out.println("CHECK");
+            }
+        }
+        else {
+            System.out.println("CHECKMATE!!");
+            System.out.println("Winner: " + chessMatch.getCurrentPlayer());
         }
     }
     public static void printBoard(ChessPiece[][] pieces){
@@ -78,7 +84,7 @@ public class UI {
         }
         System.out.println("  a b c d e f g h");
     }
-    
+
 
 
     public static  void printBoard(ChessPiece[][] pieces, boolean[][] possibleMoves){//tabuleiro com as opções marcadas
@@ -94,8 +100,8 @@ public class UI {
         }
         System.out.println("  a b c d e f g h");
     }
-    private static void printPiece(ChessPiece piece,boolean backgroun) {
-        if(backgroun){
+    private static void printPiece(ChessPiece piece, boolean background) {
+        if(background){
             System.out.print(ANSI_BLUE_BACKGROUND);
         }
         if (piece == null) {
